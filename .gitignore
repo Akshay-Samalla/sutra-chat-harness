@@ -1,0 +1,14 @@
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.env
+.env.*
+!.env.example
+coverage/
+frontend/*.tsbuildinfo
+frontend/tailwind.config.js
+frontend/tailwind.config.d.ts
+frontend/vite.config.js
+frontend/vite.config.d.ts
+.DS_Store

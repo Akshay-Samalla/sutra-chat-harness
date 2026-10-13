@@ -1,0 +1,59 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  chroma:
+    image: chromadb/chroma:0.6.3
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma-data:/chroma/chroma
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MONGODB_URI: mongodb://mongo:27017/sutra
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434/v1}
+      LOCALAI_BASE_URL: ${LOCALAI_BASE_URL:-http://host.docker.internal:8080/v1}
+      CHROMA_URL: http://chroma:8000
+    ports:
+      - "3001:3001"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:3001
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
+  chroma-data:

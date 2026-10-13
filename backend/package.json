@@ -1,0 +1,27 @@
+{
+  "name": "@sutra/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "tsx --test src/features/providers/providerSecrets.test.ts src/features/providers/providerClient.test.ts src/features/providers/providerErrors.test.ts src/features/memory/memory.service.test.ts"
+  },
+  "dependencies": {
+    "@auth/express": "^0.12.3",
+    "@sutra/shared": "0.1.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5",
+    "openai": "^4.77.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
